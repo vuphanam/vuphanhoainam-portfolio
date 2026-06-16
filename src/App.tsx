@@ -153,20 +153,45 @@ export default function App() {
   };
 
   // Contact form submission
-  const handleContactSubmit = (e: React.FormEvent) => {
+  const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formName || !formEmail || !formMessage) {
       addLog('Contact form verification failure: Missing fields.', 'warning');
       return;
     }
-    setIsSubmitted(true);
-    addLog(`Message buffered from ${formName} (${formEmail}). Outbound pipeline active.`, 'success');
-    setTimeout(() => {
-      setIsSubmitted(false);
-      setFormName('');
-      setFormEmail('');
-      setFormMessage('');
-    }, 4500);
+
+    addLog(`Initiating outbound SMTP dispatch pipeline for ${formName}...`, 'info');
+
+    try {
+      const response = await fetch('/api/sendmail', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formName,
+          email: formEmail,
+          message: formMessage,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setIsSubmitted(true);
+        addLog(`Message dispatched successfully via SMTP pipeline.`, 'success');
+        setTimeout(() => {
+          setIsSubmitted(false);
+          setFormName('');
+          setFormEmail('');
+          setFormMessage('');
+        }, 4500);
+      } else {
+        addLog(`Outbound transmission failure: ${data.error || 'Server error'}`, 'warning');
+      }
+    } catch (error: any) {
+      addLog(`Network transmission error: ${error.message || 'Unable to connect to API'}`, 'warning');
+    }
   };
 
   useEffect(() => {
