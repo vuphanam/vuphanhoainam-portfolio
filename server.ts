@@ -1,13 +1,10 @@
 import express from 'express';
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import nodemailer from 'nodemailer';
 
 dotenv.config();
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 async function startServer() {
   const app = express();
@@ -39,6 +36,14 @@ async function startServer() {
     const { name, email, message } = req.body;
     if (!name || !email || !message) {
       return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    // Check if SMTP environment variables are configured
+    if (!process.env.SMTP_USER || !process.env.SMTP_PASS || !process.env.CONTACT_RECEIVER_EMAIL) {
+      console.error('SMTP configuration error: SMTP_USER, SMTP_PASS, or CONTACT_RECEIVER_EMAIL is missing.');
+      return res.status(500).json({ 
+        error: 'SMTP configuration is missing. Please add SMTP_USER, SMTP_PASS, and CONTACT_RECEIVER_EMAIL to your environment variables in the AI Studio Settings panel.' 
+      });
     }
 
     const mailOptions = {
@@ -78,9 +83,9 @@ async function startServer() {
     });
     app.use(vite.middlewares);
   } else {
-    app.use(express.static(path.resolve(__dirname, 'dist')));
+    app.use(express.static(path.join(process.cwd(), 'dist')));
     app.use('*', (req, res) => {
-      res.sendFile(path.resolve(__dirname, 'dist/index.html'));
+      res.sendFile(path.join(process.cwd(), 'dist/index.html'));
     });
   }
 

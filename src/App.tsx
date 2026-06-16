@@ -315,7 +315,7 @@ export default function App() {
           }`}>
             <div className="relative group mb-3">
               <div className="w-16 h-16 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-xl font-bold font-display shadow-lg select-none">
-                NV
+                VN
               </div>
               <div className="absolute -bottom-1 -right-1 bg-emerald-500 border-2 border-white dark:border-slate-900 w-4 h-4 rounded-full" title="Active Code Server" />
             </div>
