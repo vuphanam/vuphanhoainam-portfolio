@@ -14,6 +14,8 @@ import { PORTFOLIO_DATA } from './data';
 import HeartEffect from './components/HeartEffect';
 import BalloonEffect from './components/BalloonEffect';
 
+const avatarImg = '/avatar.jpg';
+
 interface LogEntry {
   id: string;
   time: string;
@@ -314,9 +316,12 @@ export default function App() {
             isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
           }`}>
             <div className="relative group mb-3">
-              <div className="w-16 h-16 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-xl font-bold font-display shadow-lg select-none">
-                VN
-              </div>
+              <img
+                src={avatarImg}
+                alt={PORTFOLIO_DATA.fullName}
+                referrerPolicy="no-referrer"
+                className="w-16 h-16 rounded-2xl object-cover shadow-lg border border-slate-200/50 dark:border-slate-800 select-none transition-transform duration-300 group-hover:scale-105"
+              />
               <div className="absolute -bottom-1 -right-1 bg-emerald-500 border-2 border-white dark:border-slate-900 w-4 h-4 rounded-full" title="Active Code Server" />
             </div>
             
